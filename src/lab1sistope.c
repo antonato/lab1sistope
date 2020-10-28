@@ -1,4 +1,9 @@
-//FECHA: 08-01-19, 11:09 AM
+/*
+Laboratorio 1, Sistemas Operativos
+Creadores: Antonina Arriagada, Francisco Núñez
+Fecha de creación: 28 de Octubre, 2020
+Última actualización: 28 de Octubre, 2020
+*/
 
 
 #include <stdio.h>
@@ -37,4 +42,5 @@ int leerN(char* direccion)
 
 int main(int argc, char const *argv[])
 {
+	printf("hola\n");
 }
