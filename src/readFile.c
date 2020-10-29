@@ -5,11 +5,12 @@
 
 #define MAX 255
 
-char ** readFile( /*some*/  ){
+char ** readFile(int nChains, long int cursor, char* nameFile){
     // buffer
-    int row = 2;
+    int row = 4;
+    long int cursor;
 
-    FILE * file = fopen("../test", "r");
+    FILE * file = fopen(nameFile, "r+"); //read plus write mode 
 
     if(file == NULL){
         printf("Archivo no encontrado, verifique ruta\n");
@@ -26,9 +27,17 @@ char ** readFile( /*some*/  ){
     // lectura por lineas
     i = 0;
     while(fgets(dnaChain[i], MAX, file)){
+        cursor = ftell(file);
+        printf("Cursor: %d \n", cursor);  
         i++;
     }
 
     fclose(file);
     return dnaChain;
+}
+
+
+int main(int argc, char const *argv[])
+{
+	readFile();
 }

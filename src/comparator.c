@@ -18,7 +18,7 @@ Fecha de creación: 28 de Octubre, 2020
 
 /*-------------------LÓGICA--------------------*/
 
-short int comparador(char *chain, char *line){
+short int result(char *chain, char *line){
 
 	int lenC = strlen(chain);
 	int lenL = strlen(line);
@@ -54,10 +54,19 @@ short int comparador(char *chain, char *line){
 	return 0;
 }
 
+
+int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id){
+	return 0;
+}
+
+int coordinator(char* nameFile, int nProcess, int lenChain){
+	return 0;
+}
+
 int main(int argc, char const *argv[])
 {
 	char test[30] = "AGAAAGGCATAAATATATG"; 
 	char chain[30] = "AGAAAGGCATAAATATATG"; 
-	short int respuesta = comparador(chain,test);
-	printf("Respuesta Comparador: %d", respuesta);
+	short int answer = result(chain,test);
+	printf("Respuesta Comparador: %d", answer);
 }
