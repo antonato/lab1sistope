@@ -23,14 +23,13 @@ char ** readFile(int row, char* nameFile, long int cursorPos){
     for(i = 0; i < row; i++){
         dnaChain[i] = (char *)malloc(sizeof(char) * MAX);
     }
-
+    
     // lectura por lineas
     int j = 0;
     while(fgets(dnaChain[j], MAX, file) && j != i){
         cursor = ftell(file);
         j++;
     }
-
     fclose(file);
     return dnaChain;
 }
