@@ -39,7 +39,6 @@ int writeFile(int row, char* nameFile, char ** lines, int len){
 	printf("Iniciando proceso \n");
 	printf("Creando archivo %s\n", nameFile);
     FILE *file = fopen(nameFile, "w");
-
     if(file == NULL){
         printf("Archivo no encontrado, verifique ruta\n");
         exit(1);
