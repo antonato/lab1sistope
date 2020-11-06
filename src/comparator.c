@@ -72,11 +72,9 @@ int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id
 	
 	char ** lines =  readFile(nChains, nameFile, cursor);
 	int len = strlen(lines[0]);
+	//se agrega espacios separadores entre los resultados
 	for (int i = 0; i < nChains; i++)
 	{
-
-		printf("--> %s\n", lines[i]);
-
 		if (lines[i][len-1] == '\n')
 		{
 			lines[i][len-1] = ' ';
@@ -123,7 +121,7 @@ int main(int argc, char const *argv[])
 	int id = 1;
 	char name[20] = "test.txt";
 	int nChains = 3;
-	int cursor = 0;
+	int cursor = 21;
 	char chain[30] = "AGGAA"; 
 
 	return comparator(name, chain, cursor, nChains, id);

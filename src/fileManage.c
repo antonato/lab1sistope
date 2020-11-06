@@ -5,10 +5,18 @@
 
 #define MAX 255
 
+/*
+	Función que lee un archivo
+	Entrada: 
+			char* nameFile -> nombre del archivo
+			int row -> cantidad de cadenas a revisar
+			long int cursorPos -> posición del cursor
+    Salida: char ** -> Retorna las líneas leídas
+*/
 char ** readFile(int row, char* nameFile, long int cursorPos){
     
     FILE * file = fopen(nameFile, "r+"); //read plus write mode 
-    int cursor = fseek(file, cursorPos, SEEK_CUR);
+    fseek(file, cursorPos, SEEK_CUR); //se setea el lugar del cursor
     printf("Leyendo archivo: %s\n", nameFile);
 
 
@@ -27,7 +35,6 @@ char ** readFile(int row, char* nameFile, long int cursorPos){
     // lectura por lineas
     int j = 0;
     while(j < i && fgets(dnaChain[j], MAX, file)){
-        cursor = ftell(file);
         j++;
     }
 
@@ -35,26 +42,33 @@ char ** readFile(int row, char* nameFile, long int cursorPos){
     return dnaChain;
 }
 
+/*
+	Función que lee un archivo
+	Entrada: 
+			char* nameFile -> nombre del archivo
+			int row -> cantidad de cadenas a revisar
+            char** lines -> lineas a escribir
+			long int cursorPos -> posición del cursor
+    Salida: char ** -> retorna 1 si tiene problemas 0 si fue exitoso
+*/
 int writeFile(int row, char* nameFile, char ** lines, int len){
 
-	printf("Iniciando proceso \n");
-	printf("Creando archivo %s\n", nameFile);
     FILE *file = fopen(nameFile, "w");
     if(file == NULL){
-        printf("Archivo no encontrado, verifique ruta\n");
+        printf("Problemas con la creación del archivo %s\n", nameFile);
         exit(1);
     }
     char no[] = "NO\n";
     char si[] = "SI\n";
 
-
+    //se escriben las líneas y se agrega 'si' o 'no'
     for (int i = 0; i < row; i++)
     {
         if (lines[i][len] == '0'){
             lines[i][len] = ' ';
           	strcat(lines[i], no);
 
-            printf("--> %s", lines[i]);
+            // printf("--> %s", lines[i]);
             fputs(lines[i], file);
 		}
 		else{
@@ -66,5 +80,5 @@ int writeFile(int row, char* nameFile, char ** lines, int len){
     
   	fclose (file);
 
-    return 1;
+    return 0;
 }
