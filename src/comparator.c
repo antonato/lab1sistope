@@ -19,63 +19,76 @@ Fecha de creación: 28 de Octubre, 2020
 
 /*-------------------LÓGICA--------------------*/
 
+/*
+	Función que define si una cadena se encuentra en la línea    
+	Entrada: 
+			char* chain -> cadena a buscar
+			char *line -> línea donde se buscará
+    Salida: Si el resultado es 1 encontró una coincidencia, si es 0 es lo contrario
+*/
 short int result(char *chain, char *line){
 
 	int lenC = strlen(chain);
 	int lenL = strlen(line);
-	// printf("lenC: %d\n", lenC);
-	// printf("lenL: %d\n", lenL);
-
 
 	for (int i = 0; i < lenL-(lenC-1); ++	i)
 	{
-		// printf("%c", line[i]);
+		//busca la simitud con el primer caracter
 		if (chain[0]==line[i])
 		{
-			// printf("Encontre una similitud con %c \n", line[i]);
-			int j;
+			int j; //si lo encuentra sigue buscando con el siguiente caracter
 			for (j = 1; j < lenC; j++)
 			{
+				//si encuentra el siguiente caracter sigue adelante
 				if (chain[j]==line[i+1])
 				{
-					// printf("Encontre una similitud interna con %c \n", line[i+1]);
 					i++;
 				}
-				else{
+				else{ //si no lo encuentra corta el ciclo
 					i = i+1;
 					break;
 				}
-			}
-			if (j==lenC)
+			} 
+			if (j==lenC) //si recorrió toda la palabra es porque ha hecho match
 			{
 				return 1;
 			}
 		}
 	}
-	return 0;
+	return 0; //de lo contrario retornará 0
 }
 
-
+/*
+	Función que lee el archivo y pregunta por cada línea que deba revisar
+	Entrada: 
+			char* nameFile -> nombre del archivo
+			char* chain -> cadena a buscar
+			long int cursor -> posición del cursor
+			int nChains -> cantidad de cadenas a revisar
+			int id -> id del proceso
+    Salida: Si el resultado es 1 encontró se creó el archivo correctamente, si es 0 es lo contrario
+*/
 int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id){
 	
 	char ** lines =  readFile(nChains, nameFile, cursor);
 	int len = strlen(lines[0]);
-
-	printf("line: %s \n", lines[0]);
-	printf("line: %s \n", lines[1]);
- 
 	for (int i = 0; i < nChains; i++)
 	{
+		if (lines[i][len-1] == '\n')
+		{
+			lines[i][len-1] = ' ';
+		}else{
+			lines[i][len-1] = ' ';
+		}
 		short int answer = result(chain, lines[i]);
 		if (answer == 0){
-			lines[i][len-1] = '0';
+			lines[i][len-2] = '0';
 		}
 		else if(answer == 1) {
-			lines[i][len-1] = '1';
+			lines[i][len-2] = '1';
 		}
-		printf("i: %d line: %s \n", i,lines[i]);
 	}
-
+		
     char name[50] = "rp_";
 	char idst[3]; 
 	char guion[] = "_";
@@ -86,8 +99,13 @@ int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id
 	strcat(name, idst);
 	strcat(name, extension);
 
-	printf("Escribiendo archivo: %s\n", name);
-	return writeFile(nChains, name, lines, len);	
+	int final = writeFile(nChains, name, lines, len);
+	if (final==0)
+	{
+		printf("Se ha creado el archivo %s, desde el proceso con id: %d\n", name, id);
+	}
+	
+	return final;	
 }
 
 int main(int argc, char const *argv[])
@@ -101,11 +119,9 @@ int main(int argc, char const *argv[])
 	
 	int id = 1;
 	char name[20] = "test.txt";
-	int nChains = 2;
-	int cursor = 21;
+	int nChains = 1;
+	int cursor = 2;
 	char chain[30] = "AGGAA"; 
 
-	int result = comparator(name, chain, cursor, nChains, id);
-	printf("El resultado es exitoso");
-	return 0;
+	return comparator(name, chain, cursor, nChains, id);
 }
