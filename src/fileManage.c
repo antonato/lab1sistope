@@ -6,7 +6,7 @@
 #define MAX 255
 
 char ** readFile(int row, char* nameFile, long int cursorPos){
-
+    
     FILE * file = fopen(nameFile, "r+"); //read plus write mode 
     int cursor = fseek(file, cursorPos, SEEK_CUR);
     printf("Leyendo archivo: %s\n", nameFile);
@@ -26,10 +26,11 @@ char ** readFile(int row, char* nameFile, long int cursorPos){
     
     // lectura por lineas
     int j = 0;
-    while(fgets(dnaChain[j], MAX, file) && j != i){
+    while(j < i && fgets(dnaChain[j], MAX, file)){
         cursor = ftell(file);
         j++;
     }
+
     fclose(file);
     return dnaChain;
 }
@@ -49,13 +50,15 @@ int writeFile(int row, char* nameFile, char ** lines, int len){
 
     for (int i = 0; i < row; i++)
     {
-        if (lines[i][len-1] == '0'){
-            lines[i][len-1] = ' ';
+        if (lines[i][len] == '0'){
+            lines[i][len] = ' ';
           	strcat(lines[i], no);
+
+            printf("--> %s", lines[i]);
             fputs(lines[i], file);
 		}
 		else{
-            lines[i][len-1] = ' ';
+            lines[i][len] = ' ';
            	strcat(lines[i], si);
             fputs(lines[i], file);
 		}

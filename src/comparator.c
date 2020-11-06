@@ -74,6 +74,9 @@ int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id
 	int len = strlen(lines[0]);
 	for (int i = 0; i < nChains; i++)
 	{
+
+		printf("--> %s\n", lines[i]);
+
 		if (lines[i][len-1] == '\n')
 		{
 			lines[i][len-1] = ' ';
@@ -82,10 +85,10 @@ int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id
 		}
 		short int answer = result(chain, lines[i]);
 		if (answer == 0){
-			lines[i][len-2] = '0';
+			lines[i][len] = '0';
 		}
 		else if(answer == 1) {
-			lines[i][len-2] = '1';
+			lines[i][len] = '1';
 		}
 	}
 		
@@ -119,8 +122,8 @@ int main(int argc, char const *argv[])
 	
 	int id = 1;
 	char name[20] = "test.txt";
-	int nChains = 1;
-	int cursor = 2;
+	int nChains = 3;
+	int cursor = 0;
 	char chain[30] = "AGGAA"; 
 
 	return comparator(name, chain, cursor, nChains, id);
