@@ -117,12 +117,15 @@ int main(int argc, char const *argv[])
 	//argv[3]  cadena a encontrar
 	//argv[4]  cuántas líneas debe hacer la comparación
 	//argv[5]  número identificador
-	
+
 	int id = 1;
-	char name[20] = "test.txt";
-	int nChains = 3;
-	int cursor = 21;
-	char chain[30] = "AGGAA"; 
+	char name[20];
+	int cursor = 0;
+	char chain[30];
+	int nChains = atoi(argv[2]);
+
+	strcpy(name, argv[1]);
+	strcpy(chain, argv[3]);
 
 	return comparator(name, chain, cursor, nChains, id);
 }

@@ -14,16 +14,15 @@
     Salida: char ** -> Retorna las líneas leídas
 */
 char ** readFile(int row, char* nameFile, long int cursorPos){
-    
+
     FILE * file = fopen(nameFile, "r+"); //read plus write mode 
-    fseek(file, cursorPos, SEEK_CUR); //se setea el lugar del cursor
-    printf("Leyendo archivo: %s\n", nameFile);
-
-
+    
     if(file == NULL){
         printf("Archivo no encontrado, verifique ruta\n");
-        exit(1);
+        exit(-1);
     }
+
+    fseek(file, cursorPos, SEEK_CUR); //se setea el lugar del cursor
 
     // memoria para "row" filas de archivo
     int i;

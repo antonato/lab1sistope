@@ -1,5 +1,5 @@
 coordinator_out = sucesion
-comparator_process = test
+comparator_process = comparator
 
 
 coordinator_headers = fileManage.h utility.h memory.h

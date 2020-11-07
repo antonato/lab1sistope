@@ -111,61 +111,56 @@ void checkIn(int argc, char ** argv, char ** iFlag, int * nFlag, int * cFlag, ch
     Función ...
     Entrada:
     Salida:
+*/
+void pipelining(char * nameFile, int totalLines, char * chain, int numberProcess) {
 
-void pipelining() {
-
-    // file descriptor
-    int fd[2];
-    pipe(fd);
+    // pipe de comunicacion
+    int pipes[2];
+    pipe(pipes);
 
     int status;
     pid_t pid;
 
-    char * arguments[] = {"test", iFlag, NULL};
+    // transformacion de valores a string para argumentos
+    char lines[10];
+    sprintf(lines, "%d", totalLines);
+
+    char * arguments[] = {"comparator", nameFile, lines, chain, NULL};
 
     pid = fork();
-    // proceso padre
-    if(pid > 0) {
-        close(fd[READ]);
-        write(fd[WRITE], iFlag, 30*(sizeof(char)));
-        printf("Soy el coordinador y mi pid es %i\n", getpid());
-        waitpid(pid, &status, 0);
-    }
-    // el hijo
-    else if(pid == 0) {
-        close(fd[WRITE]);
-        printf("I'm the son and my pid is: %i\n", getpid());
-        printf("My father's pid would be: %i\n", getppid());
-        dup2(fd[READ], STDIN_FILENO);
-
+    // proceso hijo
+    if(pid == 0){
+        close(pipes[READ]);
+        dup2(pipes[WRITE], STDIN_FILENO);
         execv(arguments[0], arguments);
     }
+    // proceso padre
+    else if(pid > 0){
+        waitpid(pid, &status, 0);
+    }
+    // error
     else {
         fprintf(stderr, "Error al crear el proceso\n");
         exit(-1);
     }
 
+    printf("Proceso finalizado\n");
 
-}*/
-
-
+}
 
 
 int main(int argc, char * argv[]){
-    
-    system("clear");
+
+    // flag numero procesos, flag cantidad lineas archivo, flag resultados por pantalla
     int nFlag = 0, cFlag = 0, dFlag = 0;
-    char * iFlag = NULL;
-    char * pFlag = NULL;
+    char * iFlag = NULL; // flag nombre archivo
+    char * pFlag = NULL; // flag cadena a buscar
 
     checkIn(argc, argv, &iFlag, &nFlag, &cFlag, &pFlag, &dFlag);
 
     // direccion del archivo y lectura  
     char path[3] = "../";
     strcat(path, iFlag);
-    char ** chains = readFile(cFlag, path, 0);
-    //printChains(chains, cFlag);
-    printf("Lectura finalizada\n");
     
     // Bloque pipeline
     /*
@@ -175,11 +170,7 @@ int main(int argc, char * argv[]){
             -> Largo de las cadenas (fijo)
             -> Número de procesos   (stdin)
     */
-    
-    //pipelining();
-    
-    // liberacion de memoria y salida
-    freeMemory(chains, cFlag);
+    pipelining(path, cFlag, pFlag, nFlag);
     exit(-1);
 
     return 0;
