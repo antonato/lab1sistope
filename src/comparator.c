@@ -79,7 +79,8 @@ int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id
 		{
 			lines[i][len-1] = ' ';
 		}else{
-			lines[i][len-1] = ' ';
+			lines[i][len] = ' ';
+			len++;
 		}
 		short int answer = result(chain, lines[i]);
 		if (answer == 0){
@@ -118,14 +119,14 @@ int main(int argc, char const *argv[])
 	//argv[4]  cuántas líneas debe hacer la comparación
 	//argv[5]  número identificador
 
-	int id = 1;
 	char name[20];
-	int cursor = 0;
 	char chain[30];
-	int nChains = atoi(argv[2]);
 
 	strcpy(name, argv[1]);
+	int nChains = atoi(argv[2]);
 	strcpy(chain, argv[3]);
+	int id = atoi(argv[4]);
+	int cursor = atoi(argv[5]);
 
 	return comparator(name, chain, cursor, nChains, id);
 }

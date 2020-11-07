@@ -147,9 +147,40 @@ int makefile(int nProcess, char* chain, int flag){
     return 1;
 }
 
+/*
+    Función que lee la primera linea del archivo de entrada para recuperar el total de caracteres en la fila
+    Entrada: String con nombre y ruta del archivo
+    Salida: Entero con el largo de la fila
+*/
+int lengthChain(char * nameFile){
+
+    FILE * file = fopen(nameFile, "r");
+
+    if(file == NULL){
+        printf("Archivo no encontrado, verifique ruta\n");
+        exit(-1);
+    }
+    // memoria para una sola linea con un maximo de 255 caracteres
+    char ** dnaChain = (char **)malloc(sizeof(char *) * 1);
+    dnaChain[0] = (char *)malloc(sizeof(char) * 255);
+    // lectura de la linea
+    fgets(dnaChain[0], 255, file);
+
+    int length = 1;
+    for(int i = 0; i < length; i++) {
+        if(dnaChain[0][i] == '\n')
+            break;
+        length++;
+    }
+
+    return length;
+}
+
+
+/*
 int main(int argc, char const *argv[])
 {
     makefile(3, "AGGAA",0);
-    /* code */
+    
     return 0;
-}
+}*/

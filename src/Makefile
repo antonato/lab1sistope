@@ -2,7 +2,7 @@ coordinator_out = sucesion
 comparator_process = comparator
 
 
-coordinator_headers = fileManage.h utility.h memory.h
+coordinator_headers = fileManage.h utility.h memory.h processManager.h
 coordinator_source  = $(coordinator_headers:.h=.c) coordinator.c 
 coordinator_objects = $(coordinator_source:.c=.o)
 
