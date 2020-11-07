@@ -162,9 +162,9 @@ int lengthChain(char * nameFile){
     }
     // memoria para una sola linea con un maximo de 255 caracteres
     char ** dnaChain = (char **)malloc(sizeof(char *) * 1);
-    dnaChain[0] = (char *)malloc(sizeof(char) * 255);
+    dnaChain[0] = (char *)malloc(sizeof(char) * MAX);
     // lectura de la linea
-    fgets(dnaChain[0], 255, file);
+    fgets(dnaChain[0], MAX, file);
 
     int length = 1;
     for(int i = 0; i < length; i++) {
@@ -175,12 +175,3 @@ int lengthChain(char * nameFile){
 
     return length;
 }
-
-
-/*
-int main(int argc, char const *argv[])
-{
-    makefile(3, "AGGAA",0);
-    
-    return 0;
-}*/
