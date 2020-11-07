@@ -48,7 +48,7 @@ char ** readFile(int row, char* nameFile, long int cursorPos){
 			int row -> cantidad de cadenas a revisar
             char** lines -> lineas a escribir
 			long int cursorPos -> posición del cursor
-    Salida: char ** -> retorna 1 si tiene problemas 0 si fue exitoso
+    Salida: int -> retorna 1 si tiene problemas 0 si fue exitoso
 */
 int writeFile(int row, char* nameFile, char ** lines, int len){
 
@@ -82,7 +82,15 @@ int writeFile(int row, char* nameFile, char ** lines, int len){
     return 0;
 }
 
-int makefile(int nProcess, char* chain){
+/*
+	Función que crea el archivo final, leyendo los archivos parciales de tipo rp_<nombre cadena>_<id proceso>.txt
+	Entrada: 
+			int nProcess -> cantidad de procesos de archivos a leer
+            char* chain -> cadena a buscar para construir el nombre del archivo
+			int flag -> si desea imprimir por pantalla o no
+    Salida: int 1 -> retorna 1 si tiene problemas 0 si fue exitoso
+*/
+int makefile(int nProcess, char* chain, int flag){
     FILE *final, *rest;
     char c;
    	
@@ -93,7 +101,7 @@ int makefile(int nProcess, char* chain){
     strcat(file1,extension);
     
 
-    printf("Nombre 1: %s\n", file1);
+    printf("Nombre Archivo Final: %s\n", file1);
 
     for (int i = 1; i <= nProcess; i++)
     {
@@ -107,11 +115,29 @@ int makefile(int nProcess, char* chain){
 
         rest=fopen(file2, "r+");
         final=fopen(file1, "a");
-        printf("Nombre parcial: %s\n", file2);
+        // printf("Nombre parcial: %s\n", file2);
 
         while(!feof(rest))
         {
             fscanf(rest, "%c", &c);
+
+            if (c==10) //elimina el salto de linea generado en los archivos parciales
+            {
+                fscanf(rest, "%c", &c);
+                if(feof(rest)==0){
+                    fprintf(final, "%c", '\n');
+                    if (flag == 1)
+                    {
+                        printf("\n");
+                    }
+                    
+                }
+            }
+            if (flag==1)
+            {
+                printf("%c", c);
+            }
+            
             fprintf(final, "%c", c);
         }
         fclose(rest);
@@ -123,7 +149,7 @@ int makefile(int nProcess, char* chain){
 
 int main(int argc, char const *argv[])
 {
-    makefile(3, "AGGAA");
+    makefile(3, "AGGAA",0);
     /* code */
     return 0;
 }
