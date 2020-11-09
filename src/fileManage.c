@@ -66,8 +66,6 @@ int writeFile(int row, char* nameFile, char ** lines, int len){
         if (lines[i][len] == '0'){
             lines[i][len] = ' ';
           	strcat(lines[i], no);
-
-            // printf("--> %s", lines[i]);
             fputs(lines[i], file);
 		}
 		else{
@@ -100,6 +98,7 @@ int makefile(int nProcess, char* chain, int flag){
     strcat(file1,chain);
     strcat(file1,extension);
     
+    final=fopen(file1, "w");
 
     printf("Nombre Archivo Final: %s\n", file1);
 
@@ -114,8 +113,6 @@ int makefile(int nProcess, char* chain, int flag){
         strcat(file2,extension);
 
         rest=fopen(file2, "r+");
-        final=fopen(file1, "a");
-        // printf("Nombre parcial: %s\n", file2);
 
         while(!feof(rest))
         {
@@ -141,9 +138,8 @@ int makefile(int nProcess, char* chain, int flag){
             fprintf(final, "%c", c);
         }
         fclose(rest);
-        fclose(final);
     }
-        
+    fclose(final);
     return 1;
 }
 

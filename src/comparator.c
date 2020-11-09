@@ -1,17 +1,12 @@
-/*
-Laboratorio 1, Sistemas Operativos
-Creadores: Antonina Arriagada, Francisco Núñez
-Fecha de creación: 28 de Octubre, 2020
-Última actualización: 28 de Octubre, 2020
-*/
-
 //Declaración de librerías
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <time.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <ctype.h>
 #include "../incl/fileManage.h"
 
 
@@ -71,10 +66,12 @@ short int result(char *chain, char *line){
 int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id){
 	
 	char ** lines =  readFile(nChains, nameFile, cursor);
-	int len = strlen(lines[0]);
+	int len;
 	//se agrega espacios separadores entre los resultados
 	for (int i = 0; i < nChains; i++)
 	{
+		len = strlen(lines[i]);
+
 		if (lines[i][len-1] == '\n')
 		{
 			lines[i][len-1] = ' ';
@@ -90,7 +87,7 @@ int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id
 			lines[i][len] = '1';
 		}
 	}
-		
+
     char name[50] = "rp_";
 	char idst[3]; 
 	char guion[] = "_";
@@ -105,28 +102,30 @@ int comparator(char* nameFile, char* chain, long int cursor, int nChains, int id
 	if (final==0)
 	{
 		printf("Se ha creado el archivo %s, desde el proceso con id: %d\n", name, id);
+		exit(-1);
 	}
 	
 	return final;	
 }
 
 int main(int argc, char const *argv[])
-{
-	//argv[0]  
-	//argv[1]  archivo a ocupar
-	//argv[2]  posicion del cursor
-	//argv[3]  cadena a encontrar
-	//argv[4]  cuántas líneas debe hacer la comparación
-	//argv[5]  número identificador
+{	
+	char data[5];
+	read(STDIN_FILENO, data, 100*sizeof(char));
 
-	char name[20];
-	char chain[30];
-
-	strcpy(name, argv[1]);
-	int nChains = atoi(argv[2]);
-	strcpy(chain, argv[3]);
-	int id = atoi(argv[4]);
-	int cursor = atoi(argv[5]);
+	char * token = strtok(data, ",");
+	char * name = token; // 0
+	token = strtok(NULL, ",");
+	char * nChainsSTR = token;
+	int nChains = atoi(nChainsSTR); // 1
+	token = strtok(NULL, ",");
+	char * chain = token; // 2
+	token = strtok(NULL, ",");
+	char * idSTR = token;
+	int id = atoi(idSTR);
+	token = strtok(NULL, ",");
+	char * cursorSTR = token;
+	int cursor = atoi(cursorSTR);
 
 	return comparator(name, chain, cursor, nChains, id);
 }

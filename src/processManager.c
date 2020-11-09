@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <ctype.h>
 #include "../incl/processManager.h"
+#include "../incl/utility.h"
 
 #define READ 0
 #define WRITE 1
@@ -19,7 +20,7 @@
 void checkIn(int argc, char ** argv, char ** iFlag, int * nFlag, int * cFlag, char ** pFlag, int * dFlag) {
     
     int c;
-    if(argc < 10) {
+    if(argc < 9) {
         printf("Error al ingresar parametros de entrada, seguir la siguiente estructura\n");
         fprintf(stderr, "%s [-i <nombre_archivo.txt>] [-n <numero procesos>] [-c <cantidad lineas archivo>] [-p <cadena a buscar>] [-d]\n\n", argv[0]);
         exit(-1);
@@ -99,41 +100,55 @@ void checkIn(int argc, char ** argv, char ** iFlag, int * nFlag, int * cFlag, ch
 }
 
 /*
-    Función ...
-    Entrada:
-    Salida:
+    Función que coordina los procesos comparadores para generar soluciones parciales dado un archivo de entrada y una cadena a buscar
+    Entrada: Nombre de archivo de entrada, cadena a buscar, numero de procesos, tamaño del cursor dado el largo de la fila del archivo, 
+             lineas por proceso.
+    Salida: El proceso encapsulado genera resultados parciales en orden como archivo .txt 
 */
-void pipelining(char * nameFile, char * chain, int numberProcess, int sizeCursor, int linesPerProcess) {
+void pipelining(char * nameFile, char * chain, int numberProcess, int sizeCursor, int * linesPerProcess) {
 
     // pipe de comunicacion
-    int pipes[2];
-    pipe(pipes);
+    int ** pipes = (int **)malloc(sizeof(int *) * numberProcess);
+    for(int i = 0; i < numberProcess; i++){
+        pipes[i] = (int *)malloc(sizeof(int) * 2);
+        pipe(pipes[i]);
+    }
+
     int status;
     pid_t pid;
     // transformacion de valores a string para argumentos
     char lines[10];
-    sprintf(lines, "%d", linesPerProcess);
+    sprintf(lines, "%d", linesPerProcess[0]);
     
     char id[5];
     char cursor[5];
     int actualCursor = 0;
-    char * arguments[] = {"comparator", nameFile, lines, chain, id, cursor, NULL};
+    char * arguments[] = {nameFile, lines, chain, id, cursor};
 
     int idProcess = 0;
     while(idProcess < numberProcess) { 
         // parseo a string para entregar id y cursor como argumento en execv
         sprintf(id, "%d", (idProcess+1));
         sprintf(cursor, "%d", actualCursor);
+        // copia de datos como string
+        char * data = arguments[0];
+        for(int k = 1; k < 5; k++){
+            data = concatenateString(data, arguments[k]);
+        }
+        char * coma = ",";
+        strcat(data, coma);
 
         pid = fork();
         // proceso hijo
         if(pid == 0){
-            close(pipes[READ]);
-            dup2(pipes[WRITE], STDIN_FILENO);
-            execv(arguments[0], arguments);
+            close(pipes[idProcess][WRITE]);
+            dup2(pipes[idProcess][READ], STDIN_FILENO);
+            execl("comparator", "comparator", NULL);
         }
         // proceso padre
         else if(pid > 0){
+            close(pipes[idProcess][READ]);
+            write(pipes[idProcess][WRITE], data, strlen(data)*sizeof(char*));
             waitpid(pid, &status, 0);
         }
         // error
@@ -143,10 +158,15 @@ void pipelining(char * nameFile, char * chain, int numberProcess, int sizeCursor
         }
         // siguiente proceso y cursor
         idProcess++;
-        actualCursor = idProcess * linesPerProcess * sizeCursor;
+
+        // al último proceso se le entregan las lineas restantes
+        if(idProcess+1 == numberProcess) {
+            sprintf(lines, "%d", (linesPerProcess[0]+linesPerProcess[1]));
+        }
+        // actualizacion del cursor
+        actualCursor = idProcess * linesPerProcess[0] * sizeCursor;
     }
 
-    //makefile(numberProcess, chain);
     printf("Proceso finalizado\n");
 
 }
